@@ -1,2 +1,4 @@
 if you want to scan ports 8.8.8.8, 1 to 100
 usage: php ./MutiPortScan.php 8.8.8.8 1 100
+
+(Your computer must support pcntl_fork)
