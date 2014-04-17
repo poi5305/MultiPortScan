@@ -13,8 +13,8 @@ $net = $argv[1]; // 8.8.8.8
 $min = $argv[2]; // 1
 $max = $argv[3]; // 100
 
-$time_out = 1; // depth
-$one_time_limit = 200; // speed
+$time_out = 5; // depth
+$one_time_limit = 100; // speed
 
 
 $tmp_file = "/tmp/tmp_ping_".time().rand(0,1000);
