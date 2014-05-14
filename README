@@ -2,3 +2,18 @@ if you want to scan ports 8.8.8.8, 1 to 100
 usage: php ./MutiPortScan.php 8.8.8.8 1 100
 
 (Your computer must support pcntl_fork)
+
+----
+MutiPortScan2.php
+
+No need support pcntl_fork, but needed support socket in 
+
+usage: php MutiPortScan2.php ping|port ip range_start range_end socket_number
+
+ping 8.8.8.1 ~ 8.8.8.255 (scan 50 ip (socket) each time)
+
+e.g., php MutiPortScan2.php ping 8.8.8 1 255 50
+
+port 8.8.8.8:1 8.8.8.8:1000 100 (scan 50 port (socket) each time)
+
+php MutiPortScan2.php port 8.8.8.8 1 500 100
