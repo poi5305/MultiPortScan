@@ -6,7 +6,7 @@ usage: php ./MutiPortScan.php 8.8.8.8 1 100
 ----
 MutiPortScan2.php
 
-No need support pcntl_fork, but needed support socket in 
+No need support pcntl_fork. Using socket 
 
 usage: php MutiPortScan2.php ping|port ip range_start range_end socket_number
 
