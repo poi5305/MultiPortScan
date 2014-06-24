@@ -169,7 +169,7 @@ class MultiPortScan
 	{
 		return in_array($proto,$this->supported_protocols);
 	}
-	private function reflash($proto)
+	public function reflash($proto)
 	{
 		if( ! $this->proto_is_supported($proto) )
 		{
@@ -221,6 +221,7 @@ class MultiPortScan
 			$this->connect_number--;
 			unset($this->connected_socket_array[$ip]);
 		}
+        return true;
 	}
 	public function test_icmp_connect($socket,$ignored=null,$ignored2=null)
 	{
@@ -271,6 +272,7 @@ EOF;
 	return $a;
 }
 
+/*
 $a = new MultiPortScan();
 if($argc < 6)
 {
@@ -278,4 +280,5 @@ if($argc < 6)
 }
 $type = "scan_".$argv[1];
 $a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
+*/
 ?>
