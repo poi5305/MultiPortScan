@@ -271,14 +271,24 @@ NOTE: In order to use ICMP scan, you must run the script as r00t since we are op
 EOF;
 	return $a;
 }
-
-/*
-$a = new MultiPortScan();
-if($argc < 6)
+/* If being called from the commandline */
+if( isset($argc) )
 {
-	die(usage());
+	echo "Commandline interface\n";
+	echo "=====================\n";
+	$a = new MultiPortScan();
+	if($argc < 6)
+	{
+		die(usage());
+	}
+	$type = "scan_".$argv[1];
+	if( $argv[1] == 'port' )
+	{
+		if( $argv[3] > $argv[4] )
+		{
+			die("Invalid port range: $argv[3] $argv[4]\n");
+		}
+	}
+	$a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
 }
-$type = "scan_".$argv[1];
-$a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
-*/
-?>
+
