@@ -17,3 +17,16 @@ e.g., php MutiPortScan2.php ping 8.8.8 1 255 50
 port 8.8.8.8:1 8.8.8.8:1000 100 (scan 50 port (socket) each time)
 
 php MutiPortScan2.php port 8.8.8.8 1 500 100
+
+===============
+= Version 3.0 =
+===============
+start date:     Jun 22 2014
+main file:      MultiPortScan.php
+CHANGES:
+	- added public/private scope to functions and variables
+	- modularized repetitive code
+	- fixed spelling of main file ( added "l" where appropriate )
+FUTURE PLANS:
+	- Integrate PHPUnit testing
+	- UDP scanning
