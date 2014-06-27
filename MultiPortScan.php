@@ -169,7 +169,7 @@ class MultiPortScan
 	{
 		return in_array($proto,$this->supported_protocols);
 	}
-	private function reflash($proto)
+	public function reflash($proto)
 	{
 		if( ! $this->proto_is_supported($proto) )
 		{
@@ -221,7 +221,11 @@ class MultiPortScan
 			$this->connect_number--;
 			unset($this->connected_socket_array[$ip]);
 		}
+<<<<<<< HEAD
 		return true;
+=======
+        return true;
+>>>>>>> upstream/master
 	}
 	public function test_icmp_connect($socket,$ignored=null,$ignored2=null)
 	{
@@ -271,12 +275,36 @@ NOTE: In order to use ICMP scan, you must run the script as r00t since we are op
 EOF;
 	return $a;
 }
+<<<<<<< HEAD
 /*
 $a = new MultiPortScan();
 if($argc < 6)
+=======
+/* If being called from the commandline */
+if( isset($argc) )
+>>>>>>> upstream/master
 {
-	die(usage());
+	echo "Commandline interface\n";
+	echo "=====================\n";
+	$a = new MultiPortScan();
+	if($argc < 6)
+	{
+		die(usage());
+	}
+	$type = "scan_".$argv[1];
+	if( $argv[1] == 'port' )
+	{
+		if( $argv[3] > $argv[4] )
+		{
+			die("Invalid port range: $argv[3] $argv[4]\n");
+		}
+	}
+	$a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
 }
+<<<<<<< HEAD
 $type = "scan_".$argv[1];
 $a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
 */
+=======
+
+>>>>>>> upstream/master
