@@ -221,6 +221,7 @@ class MultiPortScan
 			$this->connect_number--;
 			unset($this->connected_socket_array[$ip]);
 		}
+		return true;
 	}
 	public function test_icmp_connect($socket,$ignored=null,$ignored2=null)
 	{
@@ -270,7 +271,7 @@ NOTE: In order to use ICMP scan, you must run the script as r00t since we are op
 EOF;
 	return $a;
 }
-
+/*
 $a = new MultiPortScan();
 if($argc < 6)
 {
@@ -278,4 +279,4 @@ if($argc < 6)
 }
 $type = "scan_".$argv[1];
 $a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
-?>
+*/

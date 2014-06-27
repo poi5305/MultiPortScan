@@ -37,7 +37,7 @@ class MultiPortScanTest extends PHPUnit_Framework_TestCase
         return [
             ['icmp',true],
             ['tcp',true],
-            ['udp',false]
+            ['udp',-1]
         ];
     }
 
