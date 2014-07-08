@@ -11,12 +11,61 @@ class MultiPortScan
 	private $socket_retry = 0;
 	private $connected_socket_array = array();
 	private $done_socket_array = array();
-	private $supported_protocols = [ 'icmp' , 'tcp' ];
+	private $supported_protocols = [ 'icmp' , 'tcp' , 'udp' ];
 	public function __construct()
 	{
 		return;
     }
-	
+	public function scan_udp($ip,$port_start,$port_end,$ignored=null)
+	{
+
+		$start = intval($port_start);
+		$end = intval($port_end);
+		if( $end < $start )
+		{
+			echo "Invalid port range: $start -> $end\n";
+			return -1;
+ 		}
+
+		//Create a UDP socket
+		if(!($sock = socket_create(AF_INET, SOCK_DGRAM, 0)))
+		{
+			$errorcode = socket_last_error();
+			$errormsg = socket_strerror($errorcode);
+			 
+			print("Couldn't create socket: [$errorcode] $errormsg \n");
+			return -2;
+		}
+		 
+		echo "Socket created \n";
+		// Set timeout 
+		if( ! socket_set_option($sock,SOL_SOCKET,SO_RCVTIMEO,array('sec'=>10,'usec'=>0)) )
+		{
+			echo "Unable to set SO_RCVTIMEO: " . socket_strerror(socket_last_error()) . "\n";
+			return -3;
+		}
+		echo "Port range: $start -> $end\n";
+		for($i=$start; $i < $end; $i++)
+		{
+			//Send back the data to the client
+			socket_sendto($sock, "pingpong" , 100 , 0 , $ip , $i);
+			echo "Waiting for data ... \n";
+			 
+			//Receive some data
+			if( ($r = socket_recvfrom($sock, $buf, 512, 0, $ip, $i)) !== FALSE )
+			{
+				$this->connected_socket_array[$ip] = array(
+                    "socket" => $sock
+                   ,"wait_count" => 0
+                   ,"state" => 0
+                   ,"retry" => 0
+            	);
+				echo "[port:" . intval($i) . "] response\n";
+			}
+		}
+		 
+		socket_close($sock);
+	}
 	public function scan_port($ip, $port_start, $port_end, $limit=1000)
 	{
 		$this->connect_number_limit = $limit;
@@ -176,8 +225,16 @@ class MultiPortScan
 			echo "Protocol $proto not supported [reflash]\n";
 			return -1;
 		}
-		$testFunc = "test_${proto}_connect";
-		$createFunc = "create_${proto}_connect";
+		if( $proto == 'udp' )
+		{
+			$suffix = "";	
+		}
+		else
+		{
+			$suffix = "_connect";
+		}
+		$testFunc = "test_${proto}${suffix}";
+		$createFunc = "create_${proto}${suffix}";
 		$success_port = array();
 		foreach($this->connected_socket_array as $ip => &$socket)
 		{
@@ -221,11 +278,7 @@ class MultiPortScan
 			$this->connect_number--;
 			unset($this->connected_socket_array[$ip]);
 		}
-<<<<<<< HEAD
 		return true;
-=======
-        return true;
->>>>>>> upstream/master
 	}
 	public function test_icmp_connect($socket,$ignored=null,$ignored2=null)
 	{
@@ -270,19 +323,16 @@ EXAMPLES:
 	# Perform a TCP scan of ports 1 through 500 on localhost
 	./thisfile port 127.0.0.1 1 500 8
 
+	# Perform a UDP scan of ports 53 through 137 on localhost
+	./thisfile udp 127.0.0.1 53 137 0
+
 NOTE: In order to use ICMP scan, you must run the script as r00t since we are opening a raw socket
 
 EOF;
 	return $a;
 }
-<<<<<<< HEAD
-/*
-$a = new MultiPortScan();
-if($argc < 6)
-=======
 /* If being called from the commandline */
 if( isset($argc) )
->>>>>>> upstream/master
 {
 	echo "Commandline interface\n";
 	echo "=====================\n";
@@ -292,19 +342,9 @@ if( isset($argc) )
 		die(usage());
 	}
 	$type = "scan_".$argv[1];
-	if( $argv[1] == 'port' )
+	if( $argv[3] > $argv[4] )
 	{
-		if( $argv[3] > $argv[4] )
-		{
-			die("Invalid port range: $argv[3] $argv[4]\n");
-		}
+		die("Invalid port range: $argv[3] $argv[4]\n");
 	}
 	$a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
 }
-<<<<<<< HEAD
-$type = "scan_".$argv[1];
-$a->$type ($argv[2], $argv[3], $argv[4], $argv[5]);
-*/
-=======
-
->>>>>>> upstream/master
