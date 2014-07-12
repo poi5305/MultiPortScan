@@ -12,11 +12,23 @@ class MultiPortScan
 	private $connected_socket_array = array();
 	private $done_socket_array = array();
 	private $supported_protocols = [ 'icmp' , 'tcp' , 'udp' ];
+	private $verbose = false;
 	public function __construct()
 	{
 		return;
     }
-	public function scan_udp($ip,$port_start,$port_end,$ignored=null)
+	public function set_verbose($bool)
+	{
+		$this->verbose = $bool;
+	}
+	public function print_verbose($msg)
+	{
+		if( $this->verbose )
+		{
+			echo $msg;
+		}
+	}
+	public function scan_udp($ip,$port_start,$port_end,$limit)
 	{
 
 		$start = intval($port_start);
@@ -37,19 +49,20 @@ class MultiPortScan
 			return -2;
 		}
 		 
-		echo "Socket created \n";
+		$this->print_verbose("Socket created \n");
 		// Set timeout 
-		if( ! socket_set_option($sock,SOL_SOCKET,SO_RCVTIMEO,array('sec'=>10,'usec'=>0)) )
+		$this->print_verbose("Using usleep recv timeout: $limit\n");
+		if( ! socket_set_option($sock,SOL_SOCKET,SO_RCVTIMEO,array('sec'=>$limit,'usec'=>0)) )
 		{
 			echo "Unable to set SO_RCVTIMEO: " . socket_strerror(socket_last_error()) . "\n";
 			return -3;
 		}
-		echo "Port range: $start -> $end\n";
+		$this->print_verbose( "Port range: $start -> $end\n" );
 		for($i=$start; $i < $end; $i++)
 		{
 			//Send back the data to the client
 			socket_sendto($sock, "pingpong" , 100 , 0 , $ip , $i);
-			echo "Waiting for data ... \n";
+			$this->print_verbose( "Waiting for data ... \n" );
 			 
 			//Receive some data
 			if( ($r = socket_recvfrom($sock, $buf, 512, 0, $ip, $i)) !== FALSE )
@@ -63,8 +76,9 @@ class MultiPortScan
 				echo "[port:" . intval($i) . "] response\n";
 			}
 		}
-		 
+		$this->print_verbose("Closing socket\n"); 
 		socket_close($sock);
+		return 0;
 	}
 	public function scan_port($ip, $port_start, $port_end, $limit=1000)
 	{
@@ -278,7 +292,7 @@ class MultiPortScan
 			$this->connect_number--;
 			unset($this->connected_socket_array[$ip]);
 		}
-		return true;
+		return 0;
 	}
 	public function test_icmp_connect($socket,$ignored=null,$ignored2=null)
 	{
@@ -340,6 +354,10 @@ if( isset($argc) )
 	if($argc < 6)
 	{
 		die(usage());
+	}
+	if( $argv[$i] == '-v' )
+	{
+		$a->set_verbose(true);
 	}
 	$type = "scan_".$argv[1];
 	if( $argv[3] > $argv[4] )
