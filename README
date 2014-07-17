@@ -5,20 +5,26 @@ No need support pcntl_fork. Using socket
 
 usage: php MultiPortScan.php ping|port ip range_start range_end socket_number
 
-#ping 8.8.8.1 ~ 8.8.8.255 (scan 50 ip (socket) each time)
+#ping 8.8.8.1 ~ 8.8.8.255. Connection timeout is 50ms
 
 ./MultiPortScan.php ping 8.8.8 1 255 50
 
-#port 8.8.8.8:1 8.8.8.8:1000 100 (scan 50 port (socket) each time)
+#port 8.8.8.8:1 8.8.8.8:1000 100. Connection timeout is 100ms
 
 ./MultiPortScan.php port 8.8.8.8 1 500 100
+
+# Using the verbosity flag (-v). Connection timeout is 1000ms (1 sec)
+./MultiPortScan.php -v udp 127.0.0.1 137 138 1000
 
 ===============
 = Version 3.0 =
 ===============
-start date:     Jun 22 2014
-main file:      MultiPortScan.php
-CHANGES:
+
+CHANGES: July 11 2014
+	- PHPUnit tests added for UDP scanning
+	- Added verbose printing
+
+CHANGES: June 22 2014
 	- added public/private scope to functions and variables
 	- modularized repetitive code
 	- fixed spelling of main file ( added "l" where appropriate )
