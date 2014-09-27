@@ -184,7 +184,7 @@ class MultiPortScan
 	{		
 		return $this->create_connection( "icmp", $ip, null, "\x08\x00\x7d\x4b\x00\x00\x00\x00PingHost" );
 	}
-	public function create_connection( $proto, $ip, $port = null, $send_payload_now=null )
+	public function create_connection( $proto, $ip_prefix, $port = null, $send_payload_now=null )
 	{
 		if( ! $this->proto_is_supported($proto) )
 		{
@@ -206,12 +206,11 @@ class MultiPortScan
 				return -2;
 		}
 
-		echo $sock_type . " " . getprotobyname($proto) . " " . $proto . "\n";
+		//echo $sock_type . " " . getprotobyname($proto) . " " . $proto . "\n";
 		$socket = socket_create(AF_INET, $sock_type , getprotobyname($proto)) or die("Unable to create socket\n");
 		socket_set_nonblock($socket);
-		// Not sure why this is appending an ip to an ip
-		// socket_connect($socket, "{$this->socket_ip}.$ip", $port);
-		socket_connect($socket,$ip,$port);
+		// Not sure why this is appending an ip to an ip // fix ip to ip_prefix
+		socket_connect($socket, "{$this->socket_ip}.$ip_prefix", $port);
 		if( $send_payload_now )
 		{
 			socket_send($socket, $send_payload_now, strlen($send_payload_now), 0);
@@ -355,10 +354,10 @@ if( isset($argc) )
 	{
 		die(usage());
 	}
-	if( $argv[$i] == '-v' )
-	{
-		$a->set_verbose(true);
-	}
+	//if( $argv[$i] == '-v' )
+	//{
+	//	$a->set_verbose(true);
+	//}
 	$type = "scan_".$argv[1];
 	if( $argv[3] > $argv[4] )
 	{
