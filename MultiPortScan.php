@@ -90,7 +90,7 @@ class MultiPortScan
 			if($this->connect_number >= $this->connect_number_limit)
 			{
 				usleep($this->connect_usleep);
-				$this->reflash_connect();
+				$this->refresh_connect();
 				continue;
 			}
 			$this->connected_socket_array[$port] = array(
@@ -116,7 +116,7 @@ class MultiPortScan
 		while($this->connect_number != 0)
 		{
 			usleep($this->connect_usleep);
-			$this->reflash_connect();
+			$this->refresh_connect();
 		}
 		print_r($this->done_socket_array);
 	}
@@ -159,7 +159,7 @@ class MultiPortScan
 			if($this->connect_number >= $this->connect_number_limit)
 			{
 				usleep($this->connect_usleep);
-				$this->reflash_icmp_connect();
+				$this->refresh_icmp_connect();
 				continue;
 			}
 			$this->connected_socket_array[$ip] = array(
@@ -219,23 +219,23 @@ class MultiPortScan
 		return $socket;
 		
 	}
-	private function reflash_icmp_connect()
+	private function refresh_icmp_connect()
 	{
-		return $this->reflash("icmp");
+		return $this->refresh("icmp");
 	}
-	private function reflash_connect()
+	private function refresh_connect()
 	{
-		return $this->reflash("tcp");
+		return $this->refresh("tcp");
 	}
 	public function proto_is_supported($proto)
 	{
 		return in_array($proto,$this->supported_protocols);
 	}
-	public function reflash($proto)
+	public function refresh($proto)
 	{
 		if( ! $this->proto_is_supported($proto) )
 		{
-			echo "Protocol $proto not supported [reflash]\n";
+			echo "Protocol $proto not supported [refresh]\n";
 			return -1;
 		}
 		if( $proto == 'udp' )
@@ -305,7 +305,7 @@ class MultiPortScan
 		while($this->connect_number != 0)
 		{
 			usleep($this->connect_usleep);
-			$this->reflash_icmp_connect();
+			$this->refresh_icmp_connect();
 		}
 		ksort($this->done_socket_array);
 		foreach($this->done_socket_array as $ip => $v)
